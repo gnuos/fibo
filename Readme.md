@@ -1,36 +1,18 @@
-![x-ray](https://cldup.com/fMBbTcVtwB.png)
+# Fibo
 
-![Last version](https://img.shields.io/github/tag/matthewmueller/x-ray.svg?style=flat-square)
-[![Build Status](http://img.shields.io/travis/matthewmueller/x-ray/master.svg?style=flat-square)](https://travis-ci.org/matthewmueller/x-ray)
-[![Coverage Status](https://coveralls.io/repos/github/matthewmueller/x-ray/badge.svg?branch=master&style=flat-square)](https://coveralls.io/github/matthewmueller/x-ray?branch=master)
-[![Dependency status](http://img.shields.io/david/matthewmueller/x-ray.svg?style=flat-square)](https://david-dm.org/matthewmueller/x-ray)
-[![Dev Dependencies Status](http://img.shields.io/david/dev/matthewmueller/x-ray.svg?style=flat-square)](https://david-dm.org/matthewmueller/x-ray#info=devDependencies)
-[![NPM Status](http://img.shields.io/npm/dm/x-ray.svg?style=flat-square)](https://www.npmjs.org/package/x-ray)
-![Node version](https://img.shields.io/node/v/x-ray.svg?style=flat-square)
-[![OpenCollective](https://opencollective.com/x-ray/backers/badge.svg)](#backers)
-[![OpenCollective](https://opencollective.com/x-ray/sponsors/badge.svg)](#sponsors)
-[![Gitter](https://badges.gitter.im/lapwinglabs/x-ray.svg)](https://gitter.im/lapwinglabs/x-ray?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+项目名字来源于斐波那契数列的简写。这个项目是从x-ray原项目fork了一份，由于原项目多年没有维护，所以从最后一版的2.3.4版本开始重构，对项目依赖的远古第三方包也进行了重构，并且把代码复制放在了项目里面
 
-```js
-var Xray = require('x-ray')
-var x = Xray()
+项目已经通过了ESLint的检查，代码完全符合ESM模块的规范要求
 
-x('https://blog.ycombinator.com/', '.post', [
-  {
-    title: 'h1 a',
-    link: '.article-title@href'
-  }
-])
-  .paginate('.nav-previous a@href')
-  .limit(3)
-  .write('results.json')
-```
 
-## Installation
+## 安装
+
+由于项目还在重构中，暂时没有上传到NPM官方仓库的打算，所以需要从Github直接安装
 
 ```
-npm install x-ray
+npm install https://github.com/gnuos/fibo.git
 ```
+
 
 ## Features
 
@@ -46,6 +28,7 @@ npm install x-ray
 - **Responsible:** X-ray has support for concurrency, throttles, delays, timeouts and limits to help you scrape any page responsibly.
 
 - **Pluggable drivers:** Swap in different scrapers depending on your needs. Currently supports HTTP and [PhantomJS driver](http://github.com/lapwinglabs/x-ray-phantom) drivers. In the future, I'd like to see a Tor driver for requesting pages through the Tor network.
+
 
 ## Selector API
 
@@ -91,7 +74,7 @@ You can also supply a `scope` to each `selector`. In jQuery, this would look som
 Instead of a url, you can also supply raw HTML and all the same semantics apply.
 
 ```js
-var html = '<body><h2>Pear</h2></body>'
+const html = '<body><h2>Pear</h2></body>'
 x(html, 'body', 'h2')(function(err, header) {
   header // => Pear
 })
@@ -106,13 +89,17 @@ Specify a `driver` to make requests through. Available drivers include:
 - [request](https://github.com/Crazometer/request-x-ray) - A simple driver built around request. Use this to set headers, cookies or http methods.
 - [phantom](https://github.com/lapwinglabs/x-ray-phantom) - A high-level browser automation library. Use this to render pages or when elements need to be interacted with, or when elements are created dynamically using javascript (e.g.: Ajax-calls).
 
+
+> **request库已经停止维护了，其中的代码还是可以借鉴参考的，可以用于快速封装自己需要的HTTP客户端库，现在流行的其他库有needle、ky、got**
+
+
 ### xray.stream()
 
 Returns Readable Stream of the data. This makes it easy to build APIs around x-ray. Here's an example with Express:
 
 ```js
-var app = require('express')()
-var x = require('x-ray')()
+const app = require('express')()
+const x = require('fibo')()
 
 app.get('/', function(req, res) {
   var stream = x('http://google.com', 'title').stream()
@@ -168,28 +155,28 @@ The `validator` function receives two arguments:
 Delay the next request between `from` and `to` milliseconds.
 If only `from` is specified, delay exactly `from` milliseconds.
 ```js
-var x = Xray().delay('1s', '10s')
+const x = Xray().delay('1s', '10s')
 ```
 
 ### xray.concurrency(n)
 
 Set the request concurrency to `n`. Defaults to `Infinity`.
 ```js
-var x = Xray().concurrency(2)
+const x = Xray().concurrency(2)
 ```
 
 ### xray.throttle(n, ms)
 
 Throttle the requests to `n` requests per `ms` milliseconds.
 ```js
-var x = Xray().throttle(2, '1s')
+const x = Xray().throttle(2, '1s')
 ```
 
 ### xray.timeout (ms)
 
 Specify a timeout of `ms` milliseconds for each request.
 ```js
-var x = Xray().timeout(30)
+const x = Xray().timeout(30)
 ```
 
 ## Collections
@@ -205,8 +192,8 @@ X-ray becomes more powerful when you start composing instances together. Here ar
 ### Crawling to another site
 
 ```js
-var Xray = require('x-ray')
-var x = Xray()
+const Xray = require('fibo')
+const x = Xray()
 
 x('http://google.com', {
   main: 'title',
@@ -224,8 +211,8 @@ x('http://google.com', {
 ### Scoping a selection
 
 ```js
-var Xray = require('x-ray')
-var x = Xray()
+const Xray = require('fibo')
+const x = Xray()
 
 x('http://mat.io', {
   title: 'title',
@@ -255,8 +242,8 @@ x('http://mat.io', {
 Filters can specified when creating a new Xray instance. To apply filters to a value, append them to the selector using `|`.
 
 ```js
-var Xray = require('x-ray')
-var x = Xray({
+const Xray = require('fibo')
+const x = Xray({
   filters: {
     trim: function(value) {
       return typeof value === 'string' ? value.trim() : value
@@ -294,83 +281,6 @@ x('http://mat.io', {
 - [collections of collections](/examples/collection-of-collections/index.js): selects an array of objects
 - [array of arrays](/examples/array-of-arrays/index.js): selects an array of arrays
 
-## In the Wild
-
-- [Levered Returns](http://leveredreturns.com): Uses x-ray to pull together financial data from various unstructured sources around the web.
-
-## Resources
-
-- Video: https://egghead.io/lessons/node-js-intro-to-web-scraping-with-node-and-x-ray
-
-## Backers
-
-Support us with a monthly donation and help us continue our activities. [[Become a backer](https://opencollective.com/x-ray#backer)]
-
-<a href="https://opencollective.com/x-ray/backer/0/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/0/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/1/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/1/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/2/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/2/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/3/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/3/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/4/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/4/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/5/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/5/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/6/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/6/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/7/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/7/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/8/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/8/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/9/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/9/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/10/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/10/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/11/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/11/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/12/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/12/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/13/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/13/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/14/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/14/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/15/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/15/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/16/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/16/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/17/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/17/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/18/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/18/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/19/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/19/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/20/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/20/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/21/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/21/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/22/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/22/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/23/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/23/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/24/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/24/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/25/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/25/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/26/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/26/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/27/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/27/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/28/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/28/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/backer/29/website" target="_blank"><img src="https://opencollective.com/x-ray/backer/29/avatar.svg"></a>
-
-## Sponsors
-
-Become a sponsor and get your logo on our website and on our README on Github with a link to your site. [[Become a sponsor](https://opencollective.com/x-ray#sponsor)]
-
-<a href="https://opencollective.com/x-ray/sponsor/0/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/0/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/1/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/1/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/2/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/2/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/3/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/3/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/4/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/4/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/5/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/5/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/6/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/6/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/7/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/7/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/8/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/8/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/9/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/9/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/10/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/10/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/11/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/11/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/12/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/12/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/13/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/13/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/14/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/14/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/15/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/15/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/16/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/16/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/17/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/17/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/18/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/18/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/19/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/19/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/20/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/20/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/21/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/21/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/22/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/22/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/23/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/23/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/24/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/24/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/25/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/25/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/26/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/26/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/27/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/27/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/28/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/28/avatar.svg"></a>
-<a href="https://opencollective.com/x-ray/sponsor/29/website" target="_blank"><img src="https://opencollective.com/x-ray/sponsor/29/avatar.svg"></a>
 
 ## License
 

@@ -3,8 +3,6 @@
 /**
  * Module dependencies
  */
-
-var m = require('multiline').stripIndent
 var concat = require('concat-stream')
 var read = require('fs').readFileSync
 var cheerio = require('cheerio')
